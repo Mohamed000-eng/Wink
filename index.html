@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة Wink - تسجيل الدخول والدردشة</title>
+    <title>منصة Wink - الدردشة المباشرة</title>
     <style>
         * {
             box-sizing: border-box;
@@ -115,7 +115,7 @@
             background-color: #0f172a;
             border-radius: 8px;
             padding: 16px;
-            height: 280px;
+            height: 320px;
             overflow-y: auto;
             margin-bottom: 16px;
             display: flex;
@@ -126,18 +126,25 @@
         .message {
             padding: 10px 14px;
             border-radius: 8px;
-            max-width: 80%;
+            max-width: 85%;
             font-size: 14px;
+            word-wrap: break-word;
         }
-        .bot {
-            background-color: #334155;
-            color: #f8fafc;
-            align-self: flex-start;
+        .sender-name {
+            font-size: 10px;
+            color: #38bdf8;
+            margin-bottom: 3px;
+            display: block;
         }
-        .user {
+        .my-msg {
             background-color: #0284c7;
             color: #ffffff;
             align-self: flex-end;
+        }
+        .other-msg {
+            background-color: #334155;
+            color: #f8fafc;
+            align-self: flex-start;
         }
         .input-group {
             display: flex;
@@ -169,12 +176,9 @@
             <span id="userDisplay"></span>
             <button class="logout-btn" id="logoutBtn">خروج</button>
         </div>
-        <h2>منصة Wink</h2>
-        <p>مرحباً بك في المنصة! يمكنك التجربة والدردشة الآن.</p>
+        <h2>محادثات Wink المباشرة</h2>
         
-        <div class="chat-box" id="chatBox">
-            <div class="message bot">أهلاً بك! تم تسجيل دخولك بنجاح عبر Firebase.</div>
-        </div>
+        <div class="chat-box" id="chatBox"></div>
 
         <div class="input-group">
             <input type="text" id="userInput" placeholder="اكتب رسالتك هنا...">
@@ -193,6 +197,12 @@
     onAuthStateChanged, 
     signOut 
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { 
+    getDatabase, 
+    ref, 
+    push, 
+    onChildAdded 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDbrYeSa84ZebL-Z07LuW8pootOh0nXLB0",
@@ -206,7 +216,9 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getDatabase(app);
 
+  let currentUser = null;
   let isSignUpMode = false;
 
   const authSection = document.getElementById('authSection');
@@ -220,8 +232,11 @@
   const authSub = document.getElementById('authSub');
   const userDisplay = document.getElementById('userDisplay');
   const logoutBtn = document.getElementById('logoutBtn');
+  const userInput = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const chatBox = document.getElementById('chatBox');
 
-  // Toggle between Login and Register
+  // Toggle Login / Register
   toggleAuthBtn.addEventListener('click', () => {
     isSignUpMode = !isSignUpMode;
     errorBox.style.display = 'none';
@@ -238,7 +253,7 @@
     }
   });
 
-  // Handle Authentication Action
+  // Auth Action
   mainAuthBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
@@ -260,15 +275,19 @@
     }
   });
 
-  // Monitor Auth State
+  // Auth State Listener
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      currentUser = user;
       authSection.style.display = 'none';
       chatSection.style.display = 'block';
       userDisplay.textContent = user.email;
+      loadMessages();
     } else {
+      currentUser = null;
       authSection.style.display = 'block';
       chatSection.style.display = 'none';
+      chatBox.innerHTML = '';
       emailInput.value = '';
       passwordInput.value = '';
     }
@@ -276,6 +295,53 @@
 
   // Logout
   logoutBtn.addEventListener('click', () => signOut(auth));
+
+  // Send Message to Realtime Database
+  function sendMessage() {
+    const text = userInput.value.trim();
+    if (text !== '' && currentUser) {
+      const messagesRef = ref(db, 'messages');
+      push(messagesRef, {
+        sender: currentUser.email,
+        text: text,
+        timestamp: Date.now()
+      });
+      userInput.value = '';
+    }
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+
+  // Listen for Live Messages
+  function loadMessages() {
+    chatBox.innerHTML = '';
+    const messagesRef = ref(db, 'messages');
+    onChildAdded(messagesRef, (snapshot) => {
+      const data = snapshot.val();
+      displayMessage(data);
+    });
+  }
+
+  function displayMessage(data) {
+    const msgDiv = document.createElement('div');
+    const isMe = data.sender === currentUser.email;
+
+    msgDiv.className = `message ${isMe ? 'my-msg' : 'other-msg'}`;
+    
+    const senderSpan = document.createElement('span');
+    senderSpan.className = 'sender-name';
+    senderSpan.textContent = isMe ? 'أنت' : data.sender.split('@')[0];
+    
+    const textNode = document.createTextNode(data.text);
+
+    msgDiv.appendChild(senderSpan);
+    msgDiv.appendChild(textNode);
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
   function showError(msg) {
     errorBox.textContent = msg;
@@ -293,34 +359,6 @@
       default: return 'حدث خطأ، يرجى المحاولة لاحقاً.';
     }
   }
-
-  // Chat Functionality
-  const userInput = document.getElementById('userInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const chatBox = document.getElementById('chatBox');
-
-  function sendMessage() {
-    if (userInput.value.trim() !== '') {
-      const userMsg = document.createElement('div');
-      userMsg.className = 'message user';
-      userMsg.textContent = userInput.value;
-      chatBox.appendChild(userMsg);
-
-      const text = userInput.value;
-      userInput.value = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      setTimeout(() => {
-        const botMsg = document.createElement('div');
-        botMsg.className = 'message bot';
-        botMsg.textContent = 'تم استلام رسالتك: ' + text;
-        chatBox.appendChild(botMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }, 500);
-    }
-  }
-
-  sendBtn.addEventListener('click', sendMessage);
 </script>
 
 </body>
