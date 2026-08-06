@@ -3,153 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة Wink - الدردشة المباشرة</title>
+    <title>منصة Wink - الدعم والمحادثات</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            background-color: #1e293b;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-        h1, h2 {
-            color: #38bdf8;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        p {
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 14px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        input {
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #475569;
-            background-color: #334155;
-            color: #fff;
-            outline: none;
-            font-size: 14px;
-        }
-        button {
-            padding: 12px;
-            background-color: #38bdf8;
-            color: #0f172a;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        button:hover {
-            background-color: #7dd3fc;
-        }
-        .btn-secondary {
-            background-color: transparent;
-            color: #94a3b8;
-            border: 1px solid #475569;
-            margin-top: 5px;
-        }
-        .btn-secondary:hover {
-            background-color: #334155;
-            color: #fff;
-        }
-        .error-msg {
-            color: #ef4444;
-            font-size: 13px;
-            text-align: center;
-            display: none;
-            margin-bottom: 10px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+        .container { background-color: #1e293b; width: 100%; max-width: 650px; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1, h2 { color: #38bdf8; margin-bottom: 12px; text-align: center; }
+        p { color: #94a3b8; line-height: 1.6; margin-bottom: 20px; text-align: center; font-size: 14px; }
+        .form-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        input, select { padding: 12px; border-radius: 6px; border: 1px solid #475569; background-color: #334155; color: #fff; outline: none; font-size: 14px; }
+        button { padding: 12px; background-color: #38bdf8; color: #0f172a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background-color: #7dd3fc; }
+        .btn-secondary { background-color: transparent; color: #94a3b8; border: 1px solid #475569; margin-top: 5px; }
+        .error-msg { color: #ef4444; font-size: 13px; text-align: center; display: none; margin-bottom: 10px; }
         
-        /* Chat UI Styles */
-        #chatSection {
-            display: none;
-        }
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 10px;
-        }
-        .chat-header span {
-            font-size: 13px;
-            color: #38bdf8;
-        }
-        .logout-btn {
-            padding: 6px 12px;
-            background-color: #ef4444;
-            color: #fff;
-            font-size: 12px;
-        }
-        .logout-btn:hover {
-            background-color: #dc2626;
-        }
-        .chat-box {
-            background-color: #0f172a;
-            border-radius: 8px;
-            padding: 16px;
-            height: 320px;
-            overflow-y: auto;
-            margin-bottom: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border: 1px solid #334155;
-        }
-        .message {
-            padding: 10px 14px;
-            border-radius: 8px;
-            max-width: 85%;
-            font-size: 14px;
-            word-wrap: break-word;
-        }
-        .sender-name {
-            font-size: 10px;
-            color: #38bdf8;
-            margin-bottom: 3px;
-            display: block;
-        }
-        .my-msg {
-            background-color: #0284c7;
-            color: #ffffff;
-            align-self: flex-end;
-        }
-        .other-msg {
-            background-color: #334155;
-            color: #f8fafc;
-            align-self: flex-start;
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
+        /* Chat Layout */
+        #chatSection { display: none; }
+        .chat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .chat-header span { font-size: 13px; color: #38bdf8; }
+        .logout-btn { padding: 6px 12px; background-color: #ef4444; color: #fff; font-size: 12px; }
+        
+        .admin-selector { margin-bottom: 15px; display: none; flex-direction: column; gap: 5px; }
+        .admin-selector label { font-size: 12px; color: #38bdf8; }
+
+        .chat-box { background-color: #0f172a; border-radius: 8px; padding: 16px; height: 320px; overflow-y: auto; margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #334155; }
+        .message { padding: 10px 14px; border-radius: 8px; max-width: 80%; font-size: 14px; word-wrap: break-word; }
+        .sender-name { font-size: 10px; color: #38bdf8; margin-bottom: 3px; display: block; }
+        .my-msg { background-color: #0284c7; color: #ffffff; align-self: flex-end; }
+        .other-msg { background-color: #334155; color: #f8fafc; align-self: flex-start; }
+        .input-group { display: flex; gap: 10px; }
     </style>
 </head>
 <body>
@@ -159,12 +41,10 @@
     <div id="authSection">
         <h1 id="authTitle">تسجيل الدخول</h1>
         <p id="authSub">أدخل بريدك الإلكتروني وكلمة المرور للمتابعة</p>
-        
         <div id="errorBox" class="error-msg"></div>
-
         <div class="form-group">
-            <input type="email" id="emailInput" placeholder="البريد الإلكتروني (Email)">
-            <input type="password" id="passwordInput" placeholder="كلمة المرور (Password)">
+            <input type="email" id="emailInput" placeholder="البريد الإلكتروني">
+            <input type="password" id="passwordInput" placeholder="كلمة المرور">
             <button id="mainAuthBtn">دخول</button>
             <button id="toggleAuthBtn" class="btn-secondary">ليس لديك حساب؟ إنشاء حساب جديد</button>
         </div>
@@ -176,7 +56,16 @@
             <span id="userDisplay"></span>
             <button class="logout-btn" id="logoutBtn">خروج</button>
         </div>
-        <h2>محادثات Wink المباشرة</h2>
+        
+        <!-- Admin Select User Dropdown -->
+        <div class="admin-selector" id="adminSelector">
+            <label>اختر المحادثة لترد عليها:</label>
+            <select id="userSelect">
+                <option value="">جاري تحميل قائمة المستخدمين...</option>
+            </select>
+        </div>
+
+        <h2 id="chatHeading">محادثات Wink</h2>
         
         <div class="chat-box" id="chatBox"></div>
 
@@ -187,31 +76,22 @@
     </div>
 </div>
 
-<!-- Firebase SDK Module -->
+<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { 
-    getAuth, 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    onAuthStateChanged, 
-    signOut 
-  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { 
-    getDatabase, 
-    ref, 
-    push, 
-    onChildAdded 
-  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getDatabase, ref, push, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const ADMIN_EMAIL = "medorahom78@gmail.com"; 
 
   const firebaseConfig = {
     apiKey: "AIzaSyDbrYeSa84ZebL-Z07LuW8pootOh0nXLB0",
     authDomain: "wink-456f2.firebaseapp.com",
+    databaseURL: "https://wink-456f2-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "wink-456f2",
     storageBucket: "wink-456f2.firebasestorage.app",
     messagingSenderId: "714419396597",
-    appId: "1:714419396597:web:f7687970a8c6f40691cabc",
-    measurementId: "G-FTY5SWXHGJ"
+    appId: "1:714419396597:web:f7687970a8c6f40691cabc"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -219,6 +99,8 @@
   const db = getDatabase(app);
 
   let currentUser = null;
+  let activeChatUid = null;
+  let activeListenerRef = null;
   let isSignUpMode = false;
 
   const authSection = document.getElementById('authSection');
@@ -228,137 +110,124 @@
   const mainAuthBtn = document.getElementById('mainAuthBtn');
   const toggleAuthBtn = document.getElementById('toggleAuthBtn');
   const errorBox = document.getElementById('errorBox');
-  const authTitle = document.getElementById('authTitle');
-  const authSub = document.getElementById('authSub');
   const userDisplay = document.getElementById('userDisplay');
   const logoutBtn = document.getElementById('logoutBtn');
+  const adminSelector = document.getElementById('adminSelector');
+  const userSelect = document.getElementById('userSelect');
   const userInput = document.getElementById('userInput');
   const sendBtn = document.getElementById('sendBtn');
   const chatBox = document.getElementById('chatBox');
 
-  // Toggle Login / Register
   toggleAuthBtn.addEventListener('click', () => {
     isSignUpMode = !isSignUpMode;
     errorBox.style.display = 'none';
-    if (isSignUpMode) {
-      authTitle.textContent = "إنشاء حساب جديد";
-      authSub.textContent = "قم بإنشاء حساب للاستفادة من خدمات المنصة";
-      mainAuthBtn.textContent = "تسجيل حساب";
-      toggleAuthBtn.textContent = "لديك حساب بالفعل؟ تسجيل الدخول";
-    } else {
-      authTitle.textContent = "تسجيل الدخول";
-      authSub.textContent = "أدخل بريدك الإلكتروني وكلمة المرور للمتابعة";
-      mainAuthBtn.textContent = "دخول";
-      toggleAuthBtn.textContent = "ليس لديك حساب؟ إنشاء حساب جديد";
-    }
+    mainAuthBtn.textContent = isSignUpMode ? "تسجيل حساب" : "دخول";
+    toggleAuthBtn.textContent = isSignUpMode ? "لديك حساب بالفعل؟ تسجيل الدخول" : "ليس لديك حساب؟ إنشاء حساب جديد";
   });
 
-  // Auth Action
   mainAuthBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
-    errorBox.style.display = 'none';
-
-    if (!email || !password) {
-      showError("يرجى إدخال البريد الإلكتروني وكلمة المرور.");
-      return;
-    }
-
+    if (!email || !password) return showError("يرجى إدخال البيانات.");
     try {
       if (isSignUpMode) {
         await createUserWithEmailAndPassword(auth, email, password);
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
-    } catch (error) {
-      showError(getArabicErrorMessage(error.code));
-    }
+    } catch (err) { showError("خطأ في تسجيل الدخول/الحساب."); }
   });
 
-  // Auth State Listener
   onAuthStateChanged(auth, (user) => {
     if (user) {
       currentUser = user;
       authSection.style.display = 'none';
       chatSection.style.display = 'block';
       userDisplay.textContent = user.email;
-      loadMessages();
+
+      if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        adminSelector.style.display = 'flex';
+        loadAdminUserList();
+      } else {
+        adminSelector.style.display = 'none';
+        activeChatUid = user.uid;
+        listenToChat(activeChatUid);
+      }
     } else {
-      currentUser = null;
       authSection.style.display = 'block';
       chatSection.style.display = 'none';
-      chatBox.innerHTML = '';
-      emailInput.value = '';
-      passwordInput.value = '';
     }
   });
 
-  // Logout
   logoutBtn.addEventListener('click', () => signOut(auth));
 
-  // Send Message to Realtime Database
-  function sendMessage() {
-    const text = userInput.value.trim();
-    if (text !== '' && currentUser) {
-      const messagesRef = ref(db, 'messages');
-      push(messagesRef, {
-        sender: currentUser.email,
-        text: text,
-        timestamp: Date.now()
-      });
-      userInput.value = '';
-    }
-  }
-
-  sendBtn.addEventListener('click', sendMessage);
-  userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-  });
-
-  // Listen for Live Messages
-  function loadMessages() {
-    chatBox.innerHTML = '';
-    const messagesRef = ref(db, 'messages');
-    onChildAdded(messagesRef, (snapshot) => {
+  function loadAdminUserList() {
+    const chatsRef = ref(db, 'chats');
+    onValue(chatsRef, (snapshot) => {
+      userSelect.innerHTML = '<option value="">-- اختر مستخدم للتحدث معه --</option>';
       const data = snapshot.val();
-      displayMessage(data);
+      if (data) {
+        Object.keys(data).forEach((uid) => {
+          const chatData = data[uid];
+          const userEmail = chatData.userEmail || uid;
+          const opt = document.createElement('option');
+          opt.value = uid;
+          opt.textContent = userEmail;
+          userSelect.appendChild(opt);
+        });
+      }
     });
   }
 
-  function displayMessage(data) {
-    const msgDiv = document.createElement('div');
-    const isMe = data.sender === currentUser.email;
+  userSelect.addEventListener('change', (e) => {
+    activeChatUid = e.target.value;
+    if (activeChatUid) listenToChat(activeChatUid);
+  });
 
-    msgDiv.className = `message ${isMe ? 'my-msg' : 'other-msg'}`;
+  function listenToChat(targetUid) {
+    if (activeListenerRef) off(activeListenerRef);
+    chatBox.innerHTML = '';
     
-    const senderSpan = document.createElement('span');
-    senderSpan.className = 'sender-name';
-    senderSpan.textContent = isMe ? 'أنت' : data.sender.split('@')[0];
-    
-    const textNode = document.createTextNode(data.text);
-
-    msgDiv.appendChild(senderSpan);
-    msgDiv.appendChild(textNode);
-    chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    activeListenerRef = ref(db, `chats/${targetUid}/messages`);
+    onValue(activeListenerRef, (snapshot) => {
+      chatBox.innerHTML = '';
+      const data = snapshot.val();
+      if (data) {
+        Object.values(data).forEach(msg => {
+          const isMe = msg.sender === currentUser.email;
+          const msgDiv = document.createElement('div');
+          msgDiv.className = `message ${isMe ? 'my-msg' : 'other-msg'}`;
+          msgDiv.innerHTML = `<span class="sender-name">${isMe ? 'أنت' : msg.sender.split('@')[0]}</span>${msg.text}`;
+          chatBox.appendChild(msgDiv);
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    });
   }
 
-  function showError(msg) {
-    errorBox.textContent = msg;
-    errorBox.style.display = 'block';
-  }
+  sendBtn.addEventListener('click', sendMessage);
+  userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-  function getArabicErrorMessage(code) {
-    switch (code) {
-      case 'auth/invalid-email': return 'البريد الإلكتروني غير صالحة صيغته.';
-      case 'auth/user-not-found':
-      case 'auth/wrong-password':
-      case 'auth/invalid-credential': return 'بيانات الدخول غير صحيحة.';
-      case 'auth/email-already-in-use': return 'هذا البريد الإلكتروني مسجل بالفعل.';
-      case 'auth/weak-password': return 'كلمة المرور ضعيفة (يجب أن تكون 6 أحرف على الأقل).';
-      default: return 'حدث خطأ، يرجى المحاولة لاحقاً.';
+  function sendMessage() {
+    const text = userInput.value.trim();
+    if (!text || !activeChatUid) return;
+
+    const messagesRef = ref(db, `chats/${activeChatUid}/messages`);
+    push(messagesRef, {
+      sender: currentUser.email,
+      text: text,
+      timestamp: Date.now()
+    });
+
+    if (currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+      const emailRef = ref(db, `chats/${currentUser.uid}/userEmail`);
+      set(emailRef, currentUser.email);
     }
+
+    userInput.value = '';
   }
+
+  function showError(msg) { errorBox.textContent = msg; errorBox.style.display = 'block'; }
 </script>
 
 </body>
