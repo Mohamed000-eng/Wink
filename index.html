@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Wink</title>
+  
+  <!-- إعدادات التثبيت على الموبايل (PWA) باسم Wink وأيقونة صقر -->
+  <meta name="theme-color" content="#0d1117">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Wink">
+  
+  <!-- أيقونة الويب (صقر) -->
+  <link rel="icon" href="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=128&q=80">
+  <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=128&q=80">
+
+  <style>
+    :root {
+      --bg-overlay: linear-gradient(to bottom, rgba(5, 10, 15, 0.78), rgba(10, 20, 30, 0.88));
+      --card-bg: rgba(15, 23, 42, 0.6);
+      --card-border: rgba(212, 175, 55, 0.4);
+      --text-color: #ffffff;
+      --subtext-color: #dddddd;
+      --gold: #d4af37;
+      --gold-bright: #facc15;
+      --nav-bg: rgba(5, 10, 15, 0.92);
+    }
+
+    [data-theme="light"] {
+      --bg-overlay: linear-gradient(to bottom, rgba(245, 245, 245, 0.88), rgba(220, 225, 230, 0.92));
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --card-border: rgba(180, 140, 20, 0.5);
+      --text-color: #1a1a1a;
+      --subtext-color: #444444;
+      --gold: #b8860b;
+      --gold-bright: #d4af37;
+      --nav-bg: rgba(250, 250, 250, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-overlay),
+                  url('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat fixed;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* انترو سينمائية */
+    #intro-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #050b14;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      animation: fadeOutIntro 1s ease 3s forwards;
+    }
+
+    .falcon-icon {
+      font-size: 4.5rem;
+      color: var(--gold);
+      text-shadow: 0 0 25px rgba(212, 175, 55, 0.9);
+      animation: pulseGold 2s infinite alternate;
+    }
+
+    .intro-title {
+      font-size: 2.3rem;
+      color: var(--gold);
+      letter-spacing: 2px;
+      margin-top: 15px;
+      font-weight: 900;
+      animation: zoomIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .intro-sub {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    @keyframes pulseGold {
+      0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--gold)); }
+      100% { transform: scale(1.15); filter: drop-shadow(0 0 30px var(--gold-bright)); }
+    }
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeOutIntro {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* شاشة تسجيل الدخول الإجبارية */
+    #auth-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 10, 15, 0.96);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .auth-box {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--gold);
+      padding: 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    .auth-box h2 { color: var(--gold); margin-bottom: 15px; }
+    .auth-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      outline: none;
+    }
+
+    .auth-box button {
+      width: 100%;
+      padding: 12px;
+      background: var(--gold);
+      border: none;
+      color: #000;
+      font-weight: bold;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .brand h1 { font-size: 1.3rem; color: var(--gold); display: inline-block; }
+    .brand span { font-size: 0.7rem; background: rgba(212, 175, 55, 0.2); padding: 2px 6px; border-radius: 8px; }
+
+    .header-controls { display: flex; gap: 6px; }
+    .ctrl-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--card-border);
+      color: var(--text-color);
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      padding-bottom: 85px;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .project-btn {
+      display: block;
+      text-align: center;
+      background: var(--gold);
+      color: #000;
+      padding: 8px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+
+    .chat-container {
+      display: flex;
+      height: 60vh;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+    }
+
+    .chat-sidebar {
+      width: 40%;
+      border-left: 1px solid var(--card-border);
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .add-user-box { display: flex; gap: 4px; margin-bottom: 10px; }
+    .add-user-box input { width: 100%; padding: 6px; border-radius: 4px; border: none; font-size: 0.75rem; outline: none; }
+    .add-user-box button { background: var(--gold); border: none; padding: 6px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
+
+    .user-item { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; font-size: 0.8rem; }
+    .user-item.active { background: rgba(212, 175, 55, 0.3); color: var(--gold-bright); }
+
+    .chat-area { flex: 1; display: flex; flex-direction: column; padding: 10px; }
+    .chat-messages { flex: 1; overflow-y: auto; }
+    .msg { padding: 8px 12px; border-radius: 8px; margin-bottom: 8px; font-size: 0.85rem; max-width: 80%; }
+    .msg.incoming { background: rgba(255,255,255,0.15); align-self: flex-start; }
+    .msg.outgoing { background: var(--gold); color: #000; font-weight: 600; margin-right: auto; }
+
+    nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .nav-btn {
+      background: none; border: none; color: var(--subtext-color); font-size: 0.75rem;
+      display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .nav-btn.active { color: var(--gold); font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- انترو سينمائية -->
+  <div id="intro-screen">
+    <div class="falcon-icon">🦅</div>
+    <div class="intro-title">WINK EMPEROR</div>
+    <div class="intro-sub" id="introSubText">EMPEROR OF DEVELOPERS</div>
+  </div>
+
+  <!-- شاشة تسجيل الدخول -->
+  <div id="auth-overlay">
+    <div class="auth-box">
+      <h2>Wink System</h2>
+      <p style="font-size: 0.8rem; margin-bottom: 15px; color: #ccc;" id="loginSub">أدخل البريد وكلمة السر للوصول</p>
+      <input type="email" id="authEmail" placeholder="البريد الإلكتروني">
+      <input type="password" id="authPass" placeholder="كلمة السر">
+      <button onclick="loginUser()" id="loginBtnTxt">تسجيل الدخول</button>
+    </div>
+  </div>
+
+  <header>
+    <div class="brand">
+      <h1>Wink</h1> <span>Emperor</span>
+    </div>
+    <div class="header-controls">
+      <button class="ctrl-btn" onclick="toggleLang()" id="langBtn">EN</button>
+      <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
+      <button class="ctrl-btn" onclick="logout()" style="border-color:var(--gold); color:var(--gold);" id="logoutBtn">خروج</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- TAB 1: الرئيسية بمحتوى وفير وكافي -->
+    <section id="tab-hero" class="tab-content active">
+      <div class="glass-card" style="margin-top: 5px;">
+        <h2 style="color: var(--gold); font-size: 1.4rem; margin-bottom: 8px;" id="heroTitle">Emperor of Developers</h2>
+        <p style="line-height: 1.7; color: var(--subtext-color); font-size: 0.9rem;" id="heroDesc">
+          حلّقتُ عالياً حيث لا تجرؤ الشكوك أن تصل. البرمجة ليست مجرد أسطر كود تُكتب وتُنسى، بل هي هيمنة تكنولوجية، وهندسة متكاملة لتأسيس أنظمة رقمية تتفوق أداءً وسرعةً وجمالاً. نحن نصنع مستقبل الويب بأنظمة ذكية ومبتكرة.
+        </p>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="color: var(--gold-bright); margin-bottom: 6px;" id="heroSubTitle1">فلسفة التحكم المطلق</h3>
+        <p style="font-size: 0.85rem; color: var(--subtext-color); line-height: 1.6;" id="heroDesc1">
+          إدارة البرمجيات بكفاءة عالية، وتطوير تطبيقات الويب السريعة، وتصميم واجهات تفاعلية مذهلة تمنح المستخدمين تجربة فريدة واستثنائية لا مثيل لها.
+        </p>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="color: var(--gold-bright); margin-bottom: 6px;" id="heroSubTitle2">رؤية الإمبراطور</h3>
+        <p style="font-size: 0.85rem; color: var(--subtext-color); line-height: 1.6;" id="heroDesc2">
+          تحويل الأفكار المعقدة إلى حلول برمجية سلسة، مع الالتزام بأعلى معايير الأمان، السرعة، والمرونة لضمان استدامة المشاريع الرقمية على المدى الطويل.
+        </p>
+      </div>
+    </section>
+
+    <!-- TAB 2: Projects -->
+    <section id="tab-projects" class="tab-content">
+      <h2 style="color: var(--gold); margin-bottom: 15px;" id="projTitle">المشاريع والأعمال (14)</h2>
+      <div class="projects-grid" id="projectsGrid"></div>
+    </section>
+
+    <!-- TAB 3: الدردشة (بدل شات) مع حصر الأشخاص -->
+    <section id="tab-chat" class="tab-content">
+      <h2 style="color: var(--gold); margin-bottom: 10px;" id="chatMainTitle">دردشة Wink</h2>
+      
+      <div class="add-user-box">
+        <input type="email" id="newUserEmail" placeholder="أدخل البريد لإضافته...">
+        <button onclick="addNewUser()" id="addUserBtn">+ إضافة</button>
+      </div>
+
+      <div class="chat-container">
+        <div class="chat-sidebar" id="userList">
+          <!-- قائمة فارغة ونظيفة مبدئياً -->
+        </div>
+        <div class="chat-area">
+          <div class="chat-messages" id="chatMsgs">
+            <div class="msg incoming" id="chatTitle">أهلاً بك في نظام الدردشة</div>
+          </div>
+          <div style="display:flex; gap:5px;">
+            <input type="text" id="chatInput" placeholder="اكتب رسالة..." style="flex:1; padding:8px; border-radius:6px; border:none; outline:none; font-size:0.85rem;">
+            <button onclick="sendMsg()" style="background:var(--gold); border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer;" id="sendBtnTxt">إرسال</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Contact -->
+    <section id="tab-contact" class="tab-content">
+      <h2 style="color: var(--gold); margin-bottom: 15px;" id="contactTitle">قنوات التواصل المباشرة</h2>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        
+        <a href="https://www.facebook.com/share/1BevBBZvcS/" target="_blank" class="glass-card" style="text-decoration:none; color:var(--text-color); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
+          <div>
+            <strong style="color:var(--gold);">فيسبوك - Facebook</strong>
+            <p style="font-size:0.75rem; color:var(--subtext-color);">الصفحة الشخصية والرسمية</p>
+          </div>
+          <span>➜</span>
+        </a>
+
+        <a href="https://www.tiktok.com/@zofan002?_r=1&_t=ZS-98eu8y9jmRY" target="_blank" class="glass-card" style="text-decoration:none; color:var(--text-color); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
+          <div>
+            <strong style="color:var(--gold);">تيك توك - TikTok</strong>
+            <p style="font-size:0.75rem; color:var(--subtext-color);">الحساب الرسمي @zofan002</p>
+          </div>
+          <span>➜</span>
+        </a>
+
+        <a href="https://wa.me/201287084707" target="_blank" class="glass-card" style="text-decoration:none; color:var(--text-color); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
+          <div>
+            <strong style="color:var(--gold);">واتساب - WhatsApp</strong>
+            <p style="font-size:0.75rem; color:var(--subtext-color);">محادثة مباشرة على 01287084707</p>
+          </div>
+          <span>➜</span>
+        </a>
+
+        <a href="https://t.me/+201095708838" target="_blank" class="glass-card" style="text-decoration:none; color:var(--text-color); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
+          <div>
+            <strong style="color:var(--gold);">تلجرام - Telegram</strong>
+            <p style="font-size:0.75rem; color:var(--subtext-color);">تواصل مباشر على 01095708838</p>
+          </div>
+          <span>➜</span>
+        </a>
+
+      </div>
+    </section>
+  </main>
+
+  <nav>
+    <button class="nav-btn active" onclick="switchTab('tab-hero', this)" id="navHome">الرئيسية</button>
+    <button class="nav-btn" onclick="switchTab('tab-projects', this)" id="navProjects">المشاريع</button>
+    <button class="nav-btn" onclick="switchTab('tab-chat', this)" id="navChat">الدردشة</button>
+    <button class="nav-btn" onclick="switchTab('tab-contact', this)" id="navContact">التواصل</button>
+  </nav>
+
+  <script>
+    const OWNER_EMAIL = "medorahom78@gmail.com";
+    const OWNER_PASS = "Wink78332010";
+
+    let currentLang = 'ar';
+    let currentTheme = 'dark';
+    let chatUsers = []; // قائمة الدردشة فارغة مبدئياً
+
+    const translations = {
+      ar: {
+        introSub: "EMPEROR OF DEVELOPERS",
+        loginSub: "أدخل البريد وكلمة السر للوصول",
+        loginBtn: "تسجيل الدخول",
+        logoutBtn: "خروج",
+        heroTitle: "Emperor of Developers",
+        heroDesc: "حلّقتُ عالياً حيث لا تجرؤ الشكوك أن تصل. البرمجة ليست مجرد أسطر كود تُكتب وتُنسى، بل هي هيمنة تكنولوجية، وهندسة متكاملة لتأسيس أنظمة رقمية تتفوق أداءً وسرعةً وجمالاً. نحن نصنع مستقبل الويب بأنظمة ذكية ومبتكرة.",
+        heroSubTitle1: "فلسفة التحكم المطلق",
+        heroDesc1: "إدارة البرمجيات بكفاءة عالية، وتطوير تطبيقات الويب السريعة، وتصميم واجهات تفاعلية مذهلة تمنح المستخدمين تجربة فريدة واستثنائية لا مثيل لها.",
+        heroSubTitle2: "رؤية الإمبراطور",
+        heroDesc2: "تحويل الأفكار المعقدة إلى حلول برمجية سلسة، مع الالتزام بأعلى معايير الأمان، السرعة، والمرونة لضمان استدامة المشاريع الرقمية على المدى الطويل.",
+        projTitle: "المشاريع والأعمال (14)",
+        chatMainTitle: "دردشة Wink",
+        addUserBtn: "+ إضافة",
+        sendBtn: "إرسال",
+        contactTitle: "قنوات التواصل المباشرة",
+        navHome: "الرئيسية",
+        navProjects: "المشاريع",
+        navChat: "الدردشة",
+        navContact: "التواصل",
+        visitBtn: "زيارة الموقع 🔗",
+        emptyChat: "قائمة الدردشة فارغة. قم بإضافة شخص للبدء."
+      },
+      en: {
+        introSub: "EMPEROR OF DEVELOPERS",
+        loginSub: "Enter Email & Password to Login",
+        loginBtn: "Login",
+        logoutBtn: "Logout",
+        heroTitle: "Emperor of Developers",
+        heroDesc: "I soared high where doubts dare not reach. Programming is not just lines of code; it is technological dominance and integrated engineering to build digital systems that excel in performance, speed, and beauty.",
+        heroSubTitle1: "Absolute Control Philosophy",
+        heroDesc1: "Managing software with high efficiency, developing fast web apps, and designing stunning interactive interfaces.",
+        heroSubTitle2: "The Emperor's Vision",
+        heroDesc2: "Turning complex ideas into seamless software solutions, ensuring top security, speed, and long-term sustainability.",
+        projTitle: "Projects & Portfolio (14)",
+        chatMainTitle: "Wink Chat",
+        addUserBtn: "+ Add",
+        sendBtn: "Send",
+        contactTitle: "Direct Contact Channels",
+        navHome: "Home",
+        navProjects: "Projects",
+        navChat: "Chat",
+        navContact: "Contact",
+        visitBtn: "Visit Site 🔗",
+        emptyChat: "Chat list is empty. Add someone to start."
+      }
+    };
+
+    const projectsData = [
+      { name: "مطعم قصر الشام", cat: "مطاعم وكافيهات", desc: "منصة طلبات طعام إلكترونية ومنيو QR تفاعلي.", link: "https://kasralsham.com" },
+      { name: "أكاديمية المتفوقين", cat: "منصة تعليمية", desc: "نظام كورسات بالفيديو واختبارات وشهادات أوتوماتيكية.", link: "https://coursera.org" },
+      { name: "كافيه السحاب Cloud Cafe", cat: "مطاعم وكافيهات", desc: "تطبيق ويب سريع للطلبات على الطاولة عبر الكود.", link: "https://starbucks.com" },
+      { name: "معرض الفخامة للسيارات", cat: "تجارة ومعارض", desc: "كتالوج إلكتروني لعرض مواصفات السيارات والأسعار.", link: "https://dubizzle.com.eg" },
+      { name: "عيادات الشفاء التخصصية", cat: "طبي وصحي", desc: "سيستم حجز مواعيد وإدارة ملفات المرضى أونلاين.", link: "https://vezeeta.com" },
+      { name: "متجر أنود للموضة", cat: "تجارة إلكترونية", desc: "متجر ملابس أونلاين بدفع إلكتروني وسلة تسوق.", link: "https://amazon.eg" },
+      { name: "مخبز و حلواني الذهبي", cat: "متاجر محلية", desc: "عرض التورتات والحلويات وحجز المخبوزات أونلاين.", link: "https://tseppas.com" },
+      { name: "مركز الأمل للتخسيس", cat: "صحة ورياضة", desc: "حاسبة سعرات حرارية ونظام متابعة للأنظمة الغذائية.", link: "https://myfitnesspal.com" },
+      { name: "منصة إنجاز للخدمات", cat: "خدمات أعمال", desc: "موقع لتلقي طلبات الاستشارات وتنسيق المواعيد.", link: "https://mostaql.com" },
+      { name: "شركة النور للمقاولات", cat: "شركات ومؤسسات", desc: "معرض سابقة أعمال التشطيبات والديكور والتصميم.", link: "https://houzz.com" },
+      { name: "ستوديو العدسة السحرية", cat: "تصوير وميديا", desc: "معرض ألبومات صور وحجز جلسات التصوير.", link: "https://unsplash.com" },
+      { name: "مغسلة السريع الحديثة", cat: "خدمات محلية", desc: "تطبيق استلام الملابس وتتبع حالة الكي والغسيل.", link: "https://cleanline.io" },
+      { name: "سوبرماركت البركة", cat: "تجارة وتجزئة", desc: "تطبيق طلب المستلزمات المنزلية بالتوصيل الفوري.", link: "https://carrefouregypt.com" },
+      { name: "مكتبة الفكر والمعرفة", cat: "متاجر وثقافة", desc: "منصة لشراء الكتب وشحنها والتوصيل للمنزل.", link: "https://diwanegypt.com" }
+    ];
+
+    function renderProjects() {
+      const grid = document.getElementById('projectsGrid');
+      grid.innerHTML = '';
+      projectsData.forEach(p => {
+        grid.innerHTML += `
+          <div class="glass-card" style="margin-bottom:0;">
+            <span style="font-size:0.7rem; background:var(--gold); color:#000; padding:2px 6px; border-radius:4px; font-weight:bold;">${p.cat}</span>
+            <h3 style="color:var(--text-color); margin-top:5px;">${p.name}</h3>
+            <p style="font-size:0.8rem; color:var(--subtext-color); margin-top:4px;">${p.desc}</p>
+            <a href="${p.link}" target="_blank" class="project-btn">${translations[currentLang].visitBtn}</a>
+          </div>
+        `;
+      });
+    }
+
+    window.onload = function() {
+      renderProjects();
+      renderChatUsers();
+      // تسجيل الدخول لا يتم تخطيه ليبقى إجبارياً كما طلبت
+    };
+
+    function toggleTheme() {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', currentTheme);
+      document.getElementById('themeBtn').innerText = currentTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === 'ar' ? 'en' : 'ar';
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLang;
+      document.getElementById('langBtn').innerText = currentLang === 'ar' ? 'EN' : 'AR';
+
+      const t = translations[currentLang];
+      document.getElementById('introSubText').innerText = t.introSub;
+      document.getElementById('loginSub').innerText = t.loginSub;
+      document.getElementById('loginBtnTxt').innerText = t.loginBtn;
+      document.getElementById('logoutBtn').innerText = t.logoutBtn;
+      document.getElementById('heroTitle').innerText = t.heroTitle;
+      document.getElementById('heroDesc').innerText = t.heroDesc;
+      document.getElementById('heroSubTitle1').innerText = t.heroSubTitle1;
+      document.getElementById('heroDesc1').innerText = t.heroDesc1;
+      document.getElementById('heroSubTitle2').innerText = t.heroSubTitle2;
+      document.getElementById('heroDesc2').innerText = t.heroDesc2;
+      document.getElementById('projTitle').innerText = t.projTitle;
+      document.getElementById('chatMainTitle').innerText = t.chatMainTitle;
+      document.getElementById('addUserBtn').innerText = t.addUserBtn;
+      document.getElementById('sendBtnTxt').innerText = t.sendBtn;
+      document.getElementById('contactTitle').innerText = t.contactTitle;
+      document.getElementById('navHome').innerText = t.navHome;
+      document.getElementById('navProjects').innerText = t.navProjects;
+      document.getElementById('navChat').innerText = t.navChat;
+      document.getElementById('navContact').innerText = t.navContact;
+
+      renderProjects();
+      renderChatUsers();
+    }
+
+    function loginUser() {
+      const email = document.getElementById('authEmail').value.trim();
+      const pass = document.getElementById('authPass').value.trim();
+
+      if(email === OWNER_EMAIL && pass === OWNER_PASS) {
+        document.getElementById('auth-overlay').style.display = 'none';
+      } else {
+        alert(currentLang === 'ar' ? 'البريد أو كلمة السر غير صحيحة!' : 'Incorrect Email or Password!');
+      }
+    }
+
+    function logout() {
+      document.getElementById('authEmail').value = '';
+      document.getElementById('authPass').value = '';
+      document.getElementById('auth-overlay').style.display = 'flex';
+    }
+
+    // إضافة مستخدم مع حصر العدد والأسماء المضافة
+    function addNewUser() {
+      const emailInput = document.getElementById('newUserEmail');
+      const email = emailInput.value.trim();
+      if(!email) return;
+
+      chatUsers.push(email);
+      emailInput.value = '';
+      renderChatUsers();
+
+      alert((currentLang === 'ar' ? 'تمت الإضافة بنجاح! إجمالي الحصر الحالي في التطبيق: ' : 'Added successfully! Total active users: ') + chatUsers.length);
+    }
+
+    function renderChatUsers() {
+      const userList = document.getElementById('userList');
+      userList.innerHTML = '';
+
+      if(chatUsers.length === 0) {
+        userList.innerHTML = `<div style="padding:10px; font-size:0.75rem; color:var(--subtext-color); text-align:center;">${translations[currentLang].emptyChat}</div>`;
+        return;
+      }
+
+      chatUsers.forEach((user, index) => {
+        const div = document.createElement('div');
+        div.className = `user-item ${index === 0 ? 'active' : ''}`;
+        div.innerText = user;
+        div.onclick = function() { selectChat(user, div); };
+        userList.appendChild(div);
+      });
+    }
+
+    function selectChat(name, el) {
+      document.querySelectorAll('.user-item').forEach(u => u.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('chatTitle').innerText = (currentLang === 'ar' ? 'دردشة مع: ' : 'Chat with: ') + name;
+    }
+
+    function sendMsg() {
+      const input = document.getElementById('chatInput');
+      if(!input.value.trim()) return;
+      const chat = document.getElementById('chatMsgs');
+      const msg = document.createElement('div');
+      msg.className = 'msg outgoing';
+      msg.innerText = input.value;
+      chat.appendChild(msg);
+      input.value = '';
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
+
