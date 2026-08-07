@@ -2,24 +2,26 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     
-    <!-- الاسم الإجباري للتطبيق -->
+    <!-- الاسم والأيقونة للشاشة الرئيسية -->
     <title>Wink</title>
     <meta name="apple-mobile-web-app-title" content="Wink">
     <meta name="application-name" content="Wink">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
 
-    <!-- ربط أيقونة الصقر بالاسم الموجود في مجلدك -->
     <link rel="icon" type="image/jpeg" href="12015.jpg.jpg">
     <link rel="apple-touch-icon" href="12015.jpg.jpg">
 
-    <!-- ملف Manifest لتثبيت الاسم وأيقونة الصقر تلقائياً دون خيار للتعديل -->
+    <!-- Manifest إجباري لتحويله لتطبيق PWA مستقل بدون شريط كروم وبدون شعار كروم -->
     <link rel="manifest" href='data:application/manifest+json,{
         "name": "Wink",
         "short_name": "Wink",
-        "start_url": "./",
+        "start_url": "./index.html",
         "display": "standalone",
+        "orientation": "portrait",
         "background_color": "#0d1d18",
         "theme_color": "#0d1d18",
         "icons": [
@@ -58,7 +60,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; transition: background 0.2s, color 0.2s; }
-        body { background-color: var(--bg-color); color: var(--text-primary); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { background-color: var(--bg-color); color: var(--text-primary); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
         
         .wink-container {
             width: 100%;
@@ -425,7 +427,7 @@
 
   forgotPassBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
-    if (!email) return alert("اكتب بريدك الإلكتروني في خانة البريد بالفي الأعلى أوالاً.");
+    if (!email) return alert("اكتب بريدك الإلكتروني في خانة البريد بالفي الأعلى أولاً.");
     try {
       await sendPasswordResetEmail(auth, email);
       alert("تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك الإلكتروني بنجاح!");
@@ -775,6 +777,20 @@
       if (text) { sendData({ text: text }); msgInput.value = ''; }
     }
   });
+</script>
+
+<!-- تسجيل Service Worker مدمج لإلغاء شريط عنوان Chrome وعلامته بالكامل -->
+<script>
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
+      self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+      self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
+    `;
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).catch(console.error);
+  }
 </script>
 
 </body>
