@@ -3,7 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wink App - النسخة النهائية</title>
+    
+    <!-- الاسم الإجباري للتطبيق -->
+    <title>Wink</title>
+    <meta name="apple-mobile-web-app-title" content="Wink">
+    <meta name="application-name" content="Wink">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- ربط أيقونة الصقر بالاسم الموجود في مجلدك -->
+    <link rel="icon" type="image/jpeg" href="12015.jpg.jpg">
+    <link rel="apple-touch-icon" href="12015.jpg.jpg">
+
+    <!-- ملف Manifest لتثبيت الاسم وأيقونة الصقر تلقائياً دون خيار للتعديل -->
+    <link rel="manifest" href='data:application/manifest+json,{
+        "name": "Wink",
+        "short_name": "Wink",
+        "start_url": "./",
+        "display": "standalone",
+        "background_color": "#0d1d18",
+        "theme_color": "#0d1d18",
+        "icons": [
+            {
+                "src": "12015.jpg.jpg",
+                "sizes": "512x512",
+                "type": "image/jpeg",
+                "purpose": "any maskable"
+            }
+        ]
+    }'>
+
     <style>
         :root {
             --bg-color: #0d1d18;
