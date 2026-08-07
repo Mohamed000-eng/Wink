@@ -6,28 +6,24 @@
     <title>Wink Private Chat</title>
     <style>
         :root {
-            /* Dark Theme (Default): Olive / Off-White / Dark Gold */
             --bg-color: #0d1d18;
             --panel-bg: #142822;
             --chat-bg: #091410;
             --text-primary: #f4f1ea;
             --text-secondary: #a3b2a4;
             --accent-gold: #b8860b;
-            --accent-gold-hover: #d4af37;
             --my-msg-bg: #1b3a30;
             --other-msg-bg: #1a231f;
             --border-color: #233e35;
         }
 
         [data-theme="light"] {
-            /* Light Theme: Off-White / Soft Olive / Dark Gold */
             --bg-color: #e6e4dc;
             --panel-bg: #f5f4ee;
             --chat-bg: #ebdcc9;
             --text-primary: #1c2826;
             --text-secondary: #586963;
             --accent-gold: #966f0d;
-            --accent-gold-hover: #b8860b;
             --my-msg-bg: #d9e5d6;
             --other-msg-bg: #ffffff;
             --border-color: #d1cdc0;
@@ -38,7 +34,7 @@
         
         .wink-container {
             width: 100%;
-            max-width: 950px;
+            max-width: 1000px;
             height: 90vh;
             background-color: var(--panel-bg);
             border-radius: 12px;
@@ -61,16 +57,16 @@
         }
         .auth-box {
             background-color: var(--panel-bg);
-            padding: 35px;
+            padding: 30px;
             border-radius: 12px;
             width: 100%;
             max-width: 400px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             border: 1px solid var(--border-color);
         }
-        .brand-title { text-align: center; font-size: 28px; font-weight: bold; color: var(--accent-gold); letter-spacing: 1px; }
+        .brand-title { text-align: center; font-size: 28px; font-weight: bold; color: var(--accent-gold); }
         .auth-box input {
             padding: 12px;
             background-color: var(--bg-color);
@@ -89,10 +85,11 @@
             cursor: pointer;
         }
 
+        #verifyBox { display: none; flex-direction: column; gap: 12px; }
+
         /* Main Chat Layout */
         #chatApp { display: none; width: 100%; height: 100%; }
 
-        /* Sidebar (Admin) */
         .sidebar {
             width: 32%;
             background-color: var(--bg-color);
@@ -106,13 +103,10 @@
             color: var(--accent-gold);
             font-weight: bold;
             border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .chat-list { flex: 1; overflow-y: auto; }
         .chat-item {
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-secondary);
             cursor: pointer;
@@ -123,7 +117,53 @@
         .chat-item:hover, .chat-item.active { background-color: var(--panel-bg); color: var(--text-primary); }
         .avatar { width: 38px; height: 38px; border-radius: 50%; background-color: var(--accent-gold); color: #000; display: flex; justify-content: center; align-items: center; font-weight: bold; }
 
-        /* Chat Window */
+        /* Start New Chat Button Section */
+        .start-chat-footer {
+            padding: 12px;
+            background-color: var(--panel-bg);
+            border-top: 1px solid var(--border-color);
+        }
+        .start-chat-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--accent-gold);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Search Modal Popup */
+        .search-modal {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        .search-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .search-box input {
+            padding: 10px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            outline: none;
+        }
+
         .chat-main { flex: 1; display: flex; flex-direction: column; background-color: var(--chat-bg); position: relative; }
         .chat-header {
             background-color: var(--panel-bg);
@@ -134,8 +174,7 @@
             border-bottom: 1px solid var(--border-color);
         }
         .brand-header { font-weight: bold; color: var(--accent-gold); }
-        .header-tools { display: flex; gap: 10px; align-items: center; }
-        .theme-toggle-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--accent-gold); }
+        .header-tools { display: flex; gap: 8px; align-items: center; }
 
         .chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
 
@@ -153,7 +192,7 @@
         .media-preview { max-width: 100%; border-radius: 8px; margin-top: 5px; display: block; }
         .msg-meta { font-size: 10px; color: var(--text-secondary); margin-top: 4px; text-align: left; }
 
-        /* Popups / Menus */
+        /* Menus */
         .attachment-menu, .emoji-picker {
             position: absolute;
             bottom: 60px;
@@ -173,7 +212,6 @@
         .emoji-picker span { cursor: pointer; padding: 5px; border-radius: 4px; }
         .emoji-picker span:hover { background-color: var(--bg-color); }
 
-        /* Input Footer */
         .chat-footer {
             background-color: var(--panel-bg);
             padding: 10px 16px;
@@ -181,7 +219,6 @@
             gap: 8px;
             align-items: center;
             border-top: 1px solid var(--border-color);
-            position: relative;
         }
         .chat-footer input[type="text"] {
             flex: 1;
@@ -201,35 +238,57 @@
 <body>
 
 <div class="wink-container" id="winkContainer" data-theme="dark">
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-box">
+            <h3 style="color:var(--accent-gold);">بحث عن شخص 🔍</h3>
+            <p style="font-size:12px; color:var(--text-secondary);">ادخل الاسم المعدل أو البريد كاملاً وانتظر ثانية للتأكد:</p>
+            <input type="text" id="searchInput" placeholder="اكتب الاسم الكامل هنا...">
+            <div id="searchResultList"></div>
+            <button id="closeSearchBtn" style="background:transparent; color:var(--text-secondary); border:none; cursor:pointer;">إلغاء</button>
+        </div>
+    </div>
+
     <!-- Auth Section -->
     <div id="authSection">
-        <div class="auth-box">
+        <div class="auth-box" id="loginBox">
             <div class="brand-title">Wink 💬</div>
+            <input type="text" id="nameInput" placeholder="الاسم المستعار (مثال: محمد)" style="display: none;">
             <input type="email" id="emailInput" placeholder="البريد الإلكتروني">
             <input type="password" id="passwordInput" placeholder="كلمة المرور">
             <button id="mainAuthBtn">تسجيل الدخول</button>
             <button style="background:transparent; color:var(--accent-gold);" id="toggleAuthBtn">إنشاء حساب جديد</button>
         </div>
+
+        <div class="auth-box" id="verifyBox">
+            <div class="brand-title">رمز التحقق 🔑</div>
+            <p style="font-size:12px; color:var(--text-secondary); text-align:center;">تم إصدار رمز التحقق الأمني الخاص بك:</p>
+            <div id="generatedCodeDisplay" style="text-align:center; font-size:24px; font-weight:bold; color:var(--accent-gold); letter-spacing:4px;"></div>
+            <input type="text" id="codeInput" placeholder="أدخل رمز التحقق هنا">
+            <button id="confirmVerifyBtn">تأكيد ودخول</button>
+        </div>
     </div>
 
     <!-- Main Chat App -->
     <div id="chatApp">
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <span>محادثات Wink</span>
-            </div>
+        <div class="sidebar">
+            <div class="sidebar-header">المحادثات</div>
             <div class="chat-list" id="chatList"></div>
+            <div class="start-chat-footer">
+                <button class="start-chat-btn" id="openSearchBtn">➕ بدء دردشة جديدة</button>
+            </div>
         </div>
 
         <div class="chat-main">
             <!-- Header -->
             <div class="chat-header">
                 <div class="brand-header">
-                    <span>Wink</span> <span id="chatTitle" style="font-size:12px; color:var(--text-secondary);"></span>
+                    <span>Wink</span> <span id="chatTitle" style="font-size:12px; color:var(--text-secondary);">| اختر محادثة</span>
                 </div>
                 <div class="header-tools">
-                    <button class="theme-toggle-btn" id="themeBtn" title="تغيير الثيم">☀️</button>
-                    <span id="userEmailDisplay" style="font-size:12px; color:var(--accent-gold);"></span>
+                    <button class="icon-btn" id="changeNameBtn" title="تعديل اسمي">✏️</button>
+                    <button class="icon-btn" id="themeBtn" title="تغيير الثيم">☀️</button>
+                    <span id="userNameDisplay" style="font-size:12px; color:var(--accent-gold);"></span>
                     <button class="icon-btn" id="logoutBtn" title="خروج">🚪</button>
                 </div>
             </div>
@@ -237,7 +296,7 @@
             <!-- Body -->
             <div class="chat-body" id="chatBody"></div>
 
-            <!-- Attachment Menu (Wink Paperclip) -->
+            <!-- Attachment Menu -->
             <div class="attachment-menu" id="attachMenu">
                 <label class="attachment-item">
                     📷 صورة
@@ -269,10 +328,10 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getDatabase, ref, push, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getDatabase, ref, push, set, onValue, off, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  const ADMIN_EMAIL = "medorahom78@gmail.com"; 
+  const ADMIN_EMAIL = "medorahom78@gmail.com"; // حساب الأدمن الخاص بك
 
   const firebaseConfig = {
     apiKey: "AIzaSyDbrYeSa84ZebL-Z07LuW8pootOh0nXLB0",
@@ -288,11 +347,28 @@
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  let currentUser = null, activeChatUid = null, activeListenerRef = null, isSignUpMode = false;
+  let currentUser = null, targetUser = null, activeListenerRef = null;
+  let isSignUpMode = false, generatedCode = null, pendingUserCreds = null;
   let mediaRecorder = null, audioChunks = [];
+  let searchTimeout = null;
+
+  // Elements
+  const winkContainer = document.getElementById('winkContainer');
+  const authSection = document.getElementById('authSection'), loginBox = document.getElementById('loginBox'), verifyBox = document.getElementById('verifyBox');
+  const nameInput = document.getElementById('nameInput'), emailInput = document.getElementById('emailInput'), passwordInput = document.getElementById('passwordInput');
+  const mainAuthBtn = document.getElementById('mainAuthBtn'), toggleAuthBtn = document.getElementById('toggleAuthBtn');
+  const generatedCodeDisplay = document.getElementById('generatedCodeDisplay'), codeInput = document.getElementById('codeInput'), confirmVerifyBtn = document.getElementById('confirmVerifyBtn');
+  const chatApp = document.getElementById('chatApp'), userNameDisplay = document.getElementById('userNameDisplay'), logoutBtn = document.getElementById('logoutBtn');
+  const chatList = document.getElementById('chatList'), chatBody = document.getElementById('chatBody');
+  const msgInput = document.getElementById('msgInput'), sendBtn = document.getElementById('sendBtn'), chatTitle = document.getElementById('chatTitle');
+  const clipBtn = document.getElementById('clipBtn'), attachMenu = document.getElementById('attachMenu');
+  const emojiBtn = document.getElementById('emojiBtn'), emojiPicker = document.getElementById('emojiPicker');
+  const micBtn = document.getElementById('micBtn'), translateBtn = document.getElementById('translateBtn');
+
+  const searchModal = document.getElementById('searchModal'), openSearchBtn = document.getElementById('openSearchBtn'), closeSearchBtn = document.getElementById('closeSearchBtn');
+  const searchInput = document.getElementById('searchInput'), searchResultList = document.getElementById('searchResultList');
 
   // Theme Toggle
-  const winkContainer = document.getElementById('winkContainer');
   document.getElementById('themeBtn').addEventListener('click', () => {
     const currentTheme = winkContainer.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -300,47 +376,69 @@
     document.getElementById('themeBtn').textContent = newTheme === 'dark' ? '☀️' : '🌙';
   });
 
-  // UI Elements
-  const authSection = document.getElementById('authSection'), chatApp = document.getElementById('chatApp');
-  const emailInput = document.getElementById('emailInput'), passwordInput = document.getElementById('passwordInput');
-  const mainAuthBtn = document.getElementById('mainAuthBtn'), toggleAuthBtn = document.getElementById('toggleAuthBtn');
-  const userEmailDisplay = document.getElementById('userEmailDisplay'), logoutBtn = document.getElementById('logoutBtn');
-  const sidebar = document.getElementById('sidebar'), chatList = document.getElementById('chatList'), chatBody = document.getElementById('chatBody');
-  const msgInput = document.getElementById('msgInput'), sendBtn = document.getElementById('sendBtn'), chatTitle = document.getElementById('chatTitle');
-  const clipBtn = document.getElementById('clipBtn'), attachMenu = document.getElementById('attachMenu');
-  const emojiBtn = document.getElementById('emojiBtn'), emojiPicker = document.getElementById('emojiPicker');
-  const micBtn = document.getElementById('micBtn'), translateBtn = document.getElementById('translateBtn');
-
-  // Auth Events
+  // SignUp Toggle
   toggleAuthBtn.addEventListener('click', () => {
     isSignUpMode = !isSignUpMode;
-    mainAuthBtn.textContent = isSignUpMode ? "إنشاء حساب" : "تسجيل الدخول";
+    nameInput.style.display = isSignUpMode ? 'block' : 'none';
+    mainAuthBtn.textContent = isSignUpMode ? "إنشاء حساب وحفظ" : "تسجيل الدخول";
+    toggleAuthBtn.textContent = isSignUpMode ? "لديك حساب؟ سجل دخولك" : "إنشاء حساب جديد";
   });
 
+  // Auth Action
   mainAuthBtn.addEventListener('click', async () => {
-    const email = emailInput.value.trim(), password = passwordInput.value.trim();
-    if (!email || !password) return alert("يرجى إدخال البيانات");
+    const email = emailInput.value.trim(), password = passwordInput.value.trim(), name = nameInput.value.trim();
+    if (!email || !password || (isSignUpMode && !name)) return alert("يرجى إكمال البيانات");
+
     try {
-      if (isSignUpMode) await createUserWithEmailAndPassword(auth, email, password);
-      else await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) { alert("خطأ في تسجيل الدخول"); }
+      if (isSignUpMode) {
+        generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+        pendingUserCreds = { email, password, name };
+        generatedCodeDisplay.textContent = generatedCode;
+        loginBox.style.display = 'none';
+        verifyBox.style.display = 'flex';
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+    } catch (err) { alert("خطأ: " + err.message); }
   });
 
+  // Verify Action
+  confirmVerifyBtn.addEventListener('click', async () => {
+    if (codeInput.value.trim() === generatedCode) {
+      try {
+        const userCred = await createUserWithEmailAndPassword(auth, pendingUserCreds.email, pendingUserCreds.password);
+        await updateProfile(userCred.user, { displayName: pendingUserCreds.name });
+        
+        await set(ref(db, `users/${userCred.user.uid}`), {
+          uid: userCred.user.uid,
+          name: pendingUserCreds.name,
+          email: pendingUserCreds.email
+        });
+
+        alert("تم إنشاء الحساب بنجاح!");
+        verifyBox.style.display = 'none';
+        loginBox.style.display = 'flex';
+      } catch (err) { alert("خطأ: " + err.message); }
+    } else {
+      alert("رمز التحقق غير صحيح");
+    }
+  });
+
+  // Auth Listener
   onAuthStateChanged(auth, (user) => {
     if (user) {
       currentUser = user;
       authSection.style.display = 'none';
       chatApp.style.display = 'flex';
-      userEmailDisplay.textContent = user.email;
+      userNameDisplay.textContent = user.displayName || user.email.split('@')[0];
 
-      if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-        sidebar.style.display = 'flex';
-        loadAdminChatList();
-      } else {
-        sidebar.style.display = 'none';
-        activeChatUid = user.uid;
-        listenToChat(activeChatUid);
-      }
+      set(ref(db, `users/${user.uid}`), {
+        uid: user.uid,
+        name: user.displayName || user.email.split('@')[0],
+        email: user.email
+      });
+
+      loadChatsList();
     } else {
       authSection.style.display = 'flex';
       chatApp.style.display = 'none';
@@ -349,14 +447,168 @@
 
   logoutBtn.addEventListener('click', () => signOut(auth));
 
-  // Attachment Menu Toggle
+  // Change Name
+  document.getElementById('changeNameBtn').addEventListener('click', async () => {
+    const newName = prompt("أدخل اسمك الجديد:", currentUser.displayName || "");
+    if (newName && newName.trim() !== "") {
+      await updateProfile(currentUser, { displayName: newName.trim() });
+      await set(ref(db, `users/${currentUser.uid}/name`), newName.trim());
+      userNameDisplay.textContent = newName.trim();
+      alert("تم التعديل بنجاح!");
+    }
+  });
+
+  // Load Chats List Logic
+  function loadChatsList() {
+    const isAdmin = currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+    if (isAdmin) {
+      // الأدمن فقط: تحديث تلقائي لجميع المستخدمين الذين أنشأوا حسابات جديدة
+      onValue(ref(db, 'users'), (snapshot) => {
+        chatList.innerHTML = '';
+        const users = snapshot.val();
+        if (users) {
+          Object.values(users).forEach(u => {
+            if (u.uid !== currentUser.uid) createChatItem(u);
+          });
+        }
+      });
+    } else {
+      // باقي المستخدمين: إظهار فقط المحادثات السابقة
+      onValue(ref(db, `user_chats/${currentUser.uid}`), async (snapshot) => {
+        chatList.innerHTML = '';
+        const chatUids = snapshot.val();
+        if (chatUids) {
+          for (let uid of Object.keys(chatUids)) {
+            const userSnap = await get(ref(db, `users/${uid}`));
+            if (userSnap.exists()) createChatItem(userSnap.val());
+          }
+        }
+      });
+    }
+  }
+
+  function createChatItem(u) {
+    const item = document.createElement('div');
+    item.className = 'chat-item';
+    item.innerHTML = `<div class="avatar">${u.name.charAt(0).toUpperCase()}</div> <div>${u.name}</div>`;
+    item.onclick = () => {
+      document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      targetUser = u;
+      chatTitle.textContent = `| مع ${u.name}`;
+      listenToChat();
+    };
+    chatList.appendChild(item);
+  }
+
+  // Search Delay System (1.5 Seconds Pause Requirement)
+  openSearchBtn.addEventListener('click', () => searchModal.style.display = 'flex');
+  closeSearchBtn.addEventListener('click', () => searchModal.style.display = 'none');
+
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchResultList.innerHTML = '<div style="font-size:11px; color:var(--text-secondary); margin-top:5px;">توقف ثانية عن الكتابة للبحث...</div>';
+
+    searchTimeout = setTimeout(() => {
+      performSearch();
+    }, 1500); // الانتظار 1.5 ثانية بعد اكتمال الاسم
+  });
+
+  async function performSearch() {
+    const query = searchInput.value.trim().toLowerCase();
+    searchResultList.innerHTML = '';
+    if (!query) return;
+
+    const snap = await get(ref(db, 'users'));
+    if (snap.exists()) {
+      const users = snap.val();
+      Object.values(users).forEach(u => {
+        if (u.uid !== currentUser.uid) {
+          const matchName = u.name.toLowerCase() === query;
+          const matchEmail = u.email.toLowerCase() === query;
+
+          if (matchName || matchEmail) {
+            const resDiv = document.createElement('div');
+            resDiv.className = 'chat-item';
+            resDiv.innerHTML = `<div class="avatar">${u.name.charAt(0).toUpperCase()}</div> <div>${u.name}</div>`;
+            resDiv.onclick = () => {
+              targetUser = u;
+              chatTitle.textContent = `| مع ${u.name}`;
+              searchModal.style.display = 'none';
+              searchInput.value = '';
+              searchResultList.innerHTML = '';
+              listenToChat();
+            };
+            searchResultList.appendChild(resDiv);
+          }
+        }
+      });
+      if (searchResultList.innerHTML === '') {
+        searchResultList.innerHTML = '<div style="font-size:12px; color:#ef4444; margin-top:5px;">لم يتم العثور على اسم مطابق تماماً.</div>';
+      }
+    }
+  }
+
+  // Chat Data Engine
+  function getRoomId(uid1, uid2) {
+    return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`;
+  }
+
+  function listenToChat() {
+    if (!targetUser) return;
+    if (activeListenerRef) off(activeListenerRef);
+    chatBody.innerHTML = '';
+
+    const roomId = getRoomId(currentUser.uid, targetUser.uid);
+    activeListenerRef = ref(db, `direct_chats/${roomId}`);
+
+    onValue(activeListenerRef, (snapshot) => {
+      chatBody.innerHTML = '';
+      const data = snapshot.val();
+      if (data) {
+        Object.values(data).forEach(msg => {
+          const isMe = msg.senderUid === currentUser.uid;
+          const msgDiv = document.createElement('div');
+          msgDiv.className = `message ${isMe ? 'my-msg' : 'other-msg'}`;
+
+          let bodyContent = msg.text ? `<div>${msg.text}</div>` : '';
+          if (msg.image) bodyContent += `<img src="${msg.image}" class="media-preview" />`;
+          if (msg.video) bodyContent += `<video src="${msg.video}" controls class="media-preview"></video>`;
+          if (msg.audio) bodyContent += `<audio src="${msg.audio}" controls style="max-width:100%; margin-top:5px;"></audio>`;
+
+          const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          msgDiv.innerHTML = `${bodyContent} <div class="msg-meta">${timeStr} ${isMe ? '✓✓' : ''}</div>`;
+          chatBody.appendChild(msgDiv);
+        });
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+    });
+  }
+
+  function sendData(payload) {
+    if (!targetUser) return alert("اختر شخصاً للتحدث معه أولاً!");
+
+    const roomId = getRoomId(currentUser.uid, targetUser.uid);
+    push(ref(db, `direct_chats/${roomId}`), {
+      senderUid: currentUser.uid,
+      senderName: currentUser.displayName || currentUser.email,
+      timestamp: Date.now(),
+      ...payload
+    });
+
+    // تسجيل إتاحة الشات في قائمة المستخدمين
+    set(ref(db, `user_chats/${currentUser.uid}/${targetUser.uid}`), true);
+    set(ref(db, `user_chats/${targetUser.uid}/${currentUser.uid}`), true);
+  }
+
+  // Tools & Attachments
   clipBtn.addEventListener('click', () => {
     attachMenu.style.display = attachMenu.style.display === 'flex' ? 'none' : 'flex';
     emojiPicker.style.display = 'none';
   });
 
-  // Emojis Initialization
-  const emojis = ['😊','😂','❤️','👍','🙏','🔥','😍','🎉','😎','✨','🙌','💯','🤔','😭','🥳','😴','🕊️','🌟','🎯','👑'];
+  const emojis = ['😊','😂','❤️','👍','🙏','🔥','😍','🎉','😎','✨','🙌','💯','🤔','😭','🥳','😴','🌟','🎯'];
   emojis.forEach(e => {
     const span = document.createElement('span');
     span.textContent = e;
@@ -368,7 +620,6 @@
     attachMenu.style.display = 'none';
   });
 
-  // Image & Video Input Handlers
   document.getElementById('imgInput').addEventListener('change', (e) => handleFile(e, 'image'));
   document.getElementById('videoInput').addEventListener('change', (e) => handleFile(e, 'video'));
 
@@ -384,7 +635,7 @@
     }
   }
 
-  // Voice Note Recording
+  // Record Voice
   micBtn.addEventListener('click', async () => {
     if (!mediaRecorder) {
       try {
@@ -401,7 +652,7 @@
           reader.readAsDataURL(blob);
           audioChunks = [];
         };
-      } catch (err) { alert("يرجى إعطاء صلاحية المايكروفون للتسجيل."); }
+      } catch (err) { alert("يرجى إعطاء صلاحية المايكروفون."); }
     } else {
       mediaRecorder.stop();
       mediaRecorder = null;
@@ -409,7 +660,7 @@
     }
   });
 
-  // Translation Service
+  // Translation
   translateBtn.addEventListener('click', async () => {
     const text = msgInput.value.trim();
     if (!text) return alert("اكتب نصاً أولاً لترجمته.");
@@ -417,60 +668,8 @@
       const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=autodetect|en`);
       const data = await res.json();
       if (data.responseData) msgInput.value = data.responseData.translatedText;
-    } catch (err) { alert("حدث خطأ أثناء الترجمة."); }
+    } catch (err) { alert("خطأ في الترجمة."); }
   });
-
-  // Chat Data Functions
-  function loadAdminChatList() {
-    onValue(ref(db, 'chats'), (snapshot) => {
-      chatList.innerHTML = '';
-      const data = snapshot.val();
-      if (data) {
-        Object.keys(data).forEach((uid) => {
-          const userEmail = data[uid].userEmail || uid;
-          const item = document.createElement('div');
-          item.className = 'chat-item';
-          item.innerHTML = `<div class="avatar">${userEmail.charAt(0).toUpperCase()}</div> <div>${userEmail.split('@')[0]}</div>`;
-          item.onclick = () => {
-            document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-            activeChatUid = uid;
-            chatTitle.textContent = `| ${userEmail}`;
-            listenToChat(uid);
-          };
-          chatList.appendChild(item);
-        });
-      }
-    });
-  }
-
-  function listenToChat(targetUid) {
-    if (activeListenerRef) off(activeListenerRef);
-    chatBody.innerHTML = '';
-    
-    activeListenerRef = ref(db, `chats/${targetUid}/messages`);
-    onValue(activeListenerRef, (snapshot) => {
-      chatBody.innerHTML = '';
-      const data = snapshot.val();
-      if (data) {
-        Object.values(data).forEach(msg => {
-          const isMe = msg.sender === currentUser.email;
-          const msgDiv = document.createElement('div');
-          msgDiv.className = `message ${isMe ? 'my-msg' : 'other-msg'}`;
-          
-          let bodyContent = msg.text ? `<div>${msg.text}</div>` : '';
-          if (msg.image) bodyContent += `<img src="${msg.image}" class="media-preview" />`;
-          if (msg.video) bodyContent += `<video src="${msg.video}" controls class="media-preview"></video>`;
-          if (msg.audio) bodyContent += `<audio src="${msg.audio}" controls style="max-width:100%; margin-top:5px;"></audio>`;
-
-          const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          msgDiv.innerHTML = `${bodyContent} <div class="msg-meta">${timeStr} ${isMe ? '✓✓' : ''}</div>`;
-          chatBody.appendChild(msgDiv);
-        });
-        chatBody.scrollTop = chatBody.scrollHeight;
-      }
-    });
-  }
 
   sendBtn.addEventListener('click', () => {
     const text = msgInput.value.trim();
@@ -483,23 +682,6 @@
       if (text) { sendData({ text: text }); msgInput.value = ''; }
     }
   });
-
-  function sendData(payload) {
-    if (!activeChatUid && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-      return alert("اختر شخصاً من القائمة أولاً.");
-    }
-
-    const targetUid = activeChatUid || currentUser.uid;
-    push(ref(db, `chats/${targetUid}/messages`), {
-      sender: currentUser.email,
-      timestamp: Date.now(),
-      ...payload
-    });
-
-    if (currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-      set(ref(db, `chats/${currentUser.uid}/userEmail`), currentUser.email);
-    }
-  }
 </script>
 
 </body>
