@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     
-    <!-- الاسم والأيقونة للشاشة الرئيسية -->
     <title>Wink</title>
     <meta name="apple-mobile-web-app-title" content="Wink">
     <meta name="application-name" content="Wink">
@@ -15,7 +14,6 @@
     <link rel="icon" type="image/jpeg" href="12015.jpg.jpg">
     <link rel="apple-touch-icon" href="12015.jpg.jpg">
 
-    <!-- Manifest إجباري لتحويله لتطبيق PWA مستقل بدون شريط كروم وبدون شعار كروم -->
     <link rel="manifest" href='data:application/manifest+json,{
         "name": "Wink",
         "short_name": "Wink",
@@ -24,14 +22,7 @@
         "orientation": "portrait",
         "background_color": "#0d1d18",
         "theme_color": "#0d1d18",
-        "icons": [
-            {
-                "src": "12015.jpg.jpg",
-                "sizes": "512x512",
-                "type": "image/jpeg",
-                "purpose": "any maskable"
-            }
-        ]
+        "icons": [{ "src": "12015.jpg.jpg", "sizes": "512x512", "type": "image/jpeg", "purpose": "any maskable" }]
     }'>
 
     <style>
@@ -63,26 +54,18 @@
         body { background-color: var(--bg-color); color: var(--text-primary); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
         
         .wink-container {
-            width: 100%;
-            max-width: 480px;
-            height: 100vh;
-            background-color: var(--panel-bg);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
+            width: 100%; max-width: 480px; height: 100vh;
+            background-color: var(--panel-bg); display: flex; flex-direction: column; position: relative; overflow: hidden;
         }
 
         /* Auth Screen */
         #authSection {
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 20px; background-color: var(--bg-color);
         }
         .auth-box {
             background-color: var(--panel-bg); padding: 25px; border-radius: 12px;
-            width: 100%; display: flex; flex-direction: column; gap: 12px;
-            border: 1px solid var(--border-color);
+            width: 100%; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border-color);
         }
         .brand-title { text-align: center; font-size: 26px; font-weight: bold; color: var(--accent-gold); }
         .auth-box input {
@@ -94,20 +77,18 @@
             border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
         }
 
-        #verifyBox, #pinLoginBox { display: none; }
+        #verifyBox, #pinLoginBox, #resetPassBox { display: none; }
 
         /* Main App Layout */
         #chatApp { display: none; width: 100%; height: 100%; position: relative; }
 
-        /* Screen 1: Chats Screen */
         .chats-screen {
             width: 100%; height: 100%; display: flex; flex-direction: column;
             background-color: var(--bg-color); position: absolute; top:0; right:0; z-index: 10;
         }
         .app-header {
             background-color: var(--panel-bg); padding: 14px 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);
         }
         .chat-list { flex: 1; overflow-y: auto; }
         .chat-item {
@@ -117,32 +98,20 @@
         .chat-item:active { background-color: var(--panel-bg); }
         .avatar { width: 42px; height: 42px; border-radius: 50%; background-color: var(--accent-gold); color: #000; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; background-size: cover; background-position: center; }
 
-        /* Admin Banner */
-        .admin-banner {
-            background-color: var(--accent-gold); color: #000; padding: 10px; font-weight: bold;
-            text-align: center; cursor: pointer; display: none;
-        }
+        .admin-banner { background-color: var(--accent-gold); color: #000; padding: 10px; font-weight: bold; text-align: center; cursor: pointer; display: none; }
 
         .fab-btn {
-            position: absolute; bottom: 20px; left: 20px;
-            width: 55px; height: 55px; border-radius: 50%;
-            background-color: var(--accent-gold); color: #000;
-            font-size: 28px; border: none; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4); cursor: pointer; z-index: 15;
+            position: absolute; bottom: 20px; left: 20px; width: 55px; height: 55px; border-radius: 50%;
+            background-color: var(--accent-gold); color: #000; font-size: 28px; border: none;
+            display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4); cursor: pointer; z-index: 15;
         }
 
-        /* Screen 2: Conversation View Screen */
         .conversation-screen {
             width: 100%; height: 100%; display: none; flex-direction: column;
             background-color: var(--chat-bg); position: absolute; top:0; right:0; z-index: 20;
         }
-        .conv-header {
-            background-color: var(--panel-bg); padding: 10px 14px;
-            display: flex; align-items: center; gap: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
+        .conv-header { background-color: var(--panel-bg); padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); }
         .back-btn { background: none; border: none; font-size: 20px; color: var(--accent-gold); cursor: pointer; }
-
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
 
         .message { max-width: 75%; padding: 8px 12px; border-radius: 10px; font-size: 14px; word-wrap: break-word; }
@@ -151,28 +120,20 @@
         .media-preview { max-width: 100%; border-radius: 8px; margin-top: 5px; display: block; }
         .msg-meta { font-size: 10px; color: var(--text-secondary); margin-top: 4px; text-align: left; }
 
-        /* Screen 3: Settings Screen */
         .settings-screen {
             width: 100%; height: 100%; display: none; flex-direction: column;
-            background-color: var(--bg-color); position: absolute; top:0; right:0; z-index: 30;
-            overflow-y: auto;
+            background-color: var(--bg-color); position: absolute; top:0; right:0; z-index: 30; overflow-y: auto;
         }
-        .settings-profile-card {
-            display: flex; flex-direction: column; align-items: center; padding: 20px;
-            background-color: var(--panel-bg); border-bottom: 1px solid var(--border-color); gap: 10px;
-        }
+        .settings-profile-card { display: flex; flex-direction: column; align-items: center; padding: 20px; background-color: var(--panel-bg); border-bottom: 1px solid var(--border-color); gap: 10px; }
         .big-avatar { width: 80px; height: 80px; border-radius: 50%; background-color: var(--accent-gold); color: #000; font-size: 32px; display: flex; justify-content: center; align-items: center; font-weight: bold; background-size: cover; background-position: center; }
         .settings-group { margin-top: 15px; background-color: var(--panel-bg); border-top: 1px solid var(--border-color); }
         .settings-item { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); cursor: pointer; }
 
-        /* Screen 4: Admin Screen */
         .admin-screen {
             width: 100%; height: 100%; display: none; flex-direction: column;
-            background-color: var(--bg-color); position: absolute; top:0; right:0; z-index: 40;
-            padding: 15px; overflow-y: auto;
+            background-color: var(--bg-color); position: absolute; top:0; right:0; z-index: 40; padding: 15px; overflow-y: auto;
         }
 
-        /* Popups */
         .attachment-menu, .emoji-picker {
             position: absolute; bottom: 60px; background-color: var(--panel-bg);
             border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; display: none; z-index: 100;
@@ -181,14 +142,8 @@
         .attachment-item { display: flex; align-items: center; gap: 10px; color: var(--text-primary); padding: 8px; cursor: pointer; }
         .emoji-picker { right: 10px; width: 240px; height: 180px; overflow-y: auto; display: none; grid-template-columns: repeat(5, 1fr); gap: 5px; font-size: 20px; text-align: center; }
 
-        .chat-footer {
-            background-color: var(--panel-bg); padding: 8px 10px;
-            display: flex; gap: 6px; align-items: center; border-top: 1px solid var(--border-color);
-        }
-        .chat-footer input[type="text"] {
-            flex: 1; padding: 10px; background-color: var(--bg-color);
-            border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-primary); outline: none;
-        }
+        .chat-footer { background-color: var(--panel-bg); padding: 8px 10px; display: flex; gap: 6px; align-items: center; border-top: 1px solid var(--border-color); }
+        .chat-footer input[type="text"] { flex: 1; padding: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-primary); outline: none; }
         .icon-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--accent-gold); padding: 4px; }
         .send-btn { padding: 8px 14px; background-color: var(--accent-gold); color: #000; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; }
 
@@ -196,10 +151,7 @@
             position: absolute; top:0; left:0; width:100%; height:100%;
             background-color: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 200; padding: 20px;
         }
-        .search-box {
-            background-color: var(--panel-bg); border: 1px solid var(--border-color);
-            padding: 20px; border-radius: 12px; width: 100%; display: flex; flex-direction: column; gap: 12px;
-        }
+        .search-box { background-color: var(--panel-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
         .search-box input { padding: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); outline: none; }
     </style>
 </head>
@@ -207,7 +159,6 @@
 
 <div class="wink-container" id="winkContainer" data-theme="dark">
     
-    <!-- Search Modal -->
     <div class="search-modal" id="searchModal">
         <div class="search-box">
             <h3 style="color:var(--accent-gold);">بدء دردشة جديدة 🔍</h3>
@@ -226,8 +177,18 @@
             <input type="email" id="emailInput" placeholder="البريد الإلكتروني">
             <input type="password" id="passwordInput" placeholder="كلمة المرور">
             <button id="mainAuthBtn">تسجيل الدخول</button>
-            <button style="background:transparent; color:var(--accent-gold); font-size:12px;" id="forgotPassBtn">نسيت كلمة السر؟</button>
-            <button style="background:transparent; color:var(--accent-gold);" id="toggleAuthBtn">إنشاء حساب جديد</button>
+            <button style="background:transparent; color:var(--accent-gold); font-size:12px; cursor:pointer;" id="forgotPassBtn">نسيت كلمة السر؟ (إعادة التعيين عبر الكود)</button>
+            <button style="background:transparent; color:var(--accent-gold); cursor:pointer;" id="toggleAuthBtn">إنشاء حساب جديد</button>
+        </div>
+
+        <!-- نافذة إدخال رمز التحقق وكلمة السر الجديدة -->
+        <div class="auth-box" id="resetPassBox">
+            <div class="brand-title">إعادة تعيين كلمة السر 🔑</div>
+            <p style="font-size:12px; color:var(--text-secondary); text-align:center;">تم إرسال رمز التحقق/الرابط إلى بريدك الإلكتروني. أدخل الرمز وكلمة المرور الجديدة:</p>
+            <input type="text" id="resetCodeInput" placeholder="رمز التحقق المكون من الأرقام/الأحرف">
+            <input type="password" id="newPasswordInput" placeholder="كلمة المرور الجديدة">
+            <button id="confirmResetBtn">تحديث كلمة السر والدخول</button>
+            <button style="background:transparent; color:var(--accent-gold); font-size:12px; cursor:pointer;" id="cancelResetBtn">إلغاء والعودة</button>
         </div>
 
         <div class="auth-box" id="pinLoginBox">
@@ -235,7 +196,7 @@
             <p style="text-align:center; font-size:12px; color:var(--text-secondary);">أدخل رمز الـ PIN للدخول السريع:</p>
             <input type="password" id="pinInput" maxlength="4" style="text-align:center; font-size:20px; letter-spacing:5px;" placeholder="****">
             <button id="confirmPinBtn">دخول</button>
-            <button style="background:transparent; color:var(--accent-gold); font-size:12px;" id="usePassAuthBtn">الدخول بالبريد وكلمة السر</button>
+            <button style="background:transparent; color:var(--accent-gold); font-size:12px; cursor:pointer;" id="usePassAuthBtn">الدخول بالبريد وكلمة السر</button>
         </div>
 
         <div class="auth-box" id="verifyBox">
@@ -249,7 +210,6 @@
 
     <!-- Main Chat App -->
     <div id="chatApp">
-        <!-- Screen 1: Chats Screen -->
         <div class="chats-screen" id="chatsScreen">
             <div class="app-header">
                 <span style="font-size:20px; font-weight:bold; color:var(--accent-gold);">Wink</span>
@@ -260,12 +220,10 @@
             </div>
 
             <div class="admin-banner" id="adminBannerBtn">🛠️ لوحة التحكم الأدمن (نظامي)</div>
-
             <div class="chat-list" id="chatList"></div>
             <button class="fab-btn" id="openSearchBtn">＋</button>
         </div>
 
-        <!-- Screen 2: Conversation View Screen -->
         <div class="conversation-screen" id="convScreen">
             <div class="conv-header">
                 <button class="back-btn" id="backToChatsBtn">➔</button>
@@ -295,7 +253,6 @@
             </div>
         </div>
 
-        <!-- Screen 3: Settings Screen -->
         <div class="settings-screen" id="settingsScreen">
             <div class="app-header">
                 <button class="back-btn" id="closeSettingsBtn">➔</button>
@@ -329,7 +286,6 @@
             </div>
         </div>
 
-        <!-- Screen 4: Admin Control Dashboard Screen -->
         <div class="admin-screen" id="adminScreen">
             <div class="app-header" style="padding:0 0 10px 0;">
                 <button class="back-btn" id="closeAdminBtn">➔</button>
@@ -338,7 +294,6 @@
             </div>
 
             <input type="text" id="adminSearchInput" placeholder="ابحث عن حساب بالنظام..." style="width:100%; padding:10px; background:var(--panel-bg); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; margin-bottom:15px;">
-
             <h4 style="margin-bottom:10px; color:var(--accent-gold);">جميع الحسابات المسجلة والنشاطات:</h4>
             <div id="adminUserList" style="display:flex; flex-direction:column; gap:10px;"></div>
         </div>
@@ -347,7 +302,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getDatabase, ref, push, set, onValue, off, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
   const ADMIN_EMAIL = "medorahom78@gmail.com"; 
@@ -370,13 +325,14 @@
   let isSignUpMode = false, generatedCode = null, pendingUserCreds = null;
   let mediaRecorder = null, audioChunks = [], searchTimeout = null;
 
-  // Elements
   const winkContainer = document.getElementById('winkContainer');
-  const authSection = document.getElementById('authSection'), loginBox = document.getElementById('loginBox'), verifyBox = document.getElementById('verifyBox'), pinLoginBox = document.getElementById('pinLoginBox');
+  const authSection = document.getElementById('authSection'), loginBox = document.getElementById('loginBox'), verifyBox = document.getElementById('verifyBox'), pinLoginBox = document.getElementById('pinLoginBox'), resetPassBox = document.getElementById('resetPassBox');
   const nameInput = document.getElementById('nameInput'), emailInput = document.getElementById('emailInput'), passwordInput = document.getElementById('passwordInput');
   const mainAuthBtn = document.getElementById('mainAuthBtn'), toggleAuthBtn = document.getElementById('toggleAuthBtn'), forgotPassBtn = document.getElementById('forgotPassBtn');
   const generatedCodeDisplay = document.getElementById('generatedCodeDisplay'), codeInput = document.getElementById('codeInput'), confirmVerifyBtn = document.getElementById('confirmVerifyBtn');
   
+  const resetCodeInput = document.getElementById('resetCodeInput'), newPasswordInput = document.getElementById('newPasswordInput'), confirmResetBtn = document.getElementById('confirmResetBtn'), cancelResetBtn = document.getElementById('cancelResetBtn');
+
   const chatApp = document.getElementById('chatApp'), chatsScreen = document.getElementById('chatsScreen'), convScreen = document.getElementById('convScreen'), settingsScreen = document.getElementById('settingsScreen'), adminScreen = document.getElementById('adminScreen');
   const chatList = document.getElementById('chatList'), chatBody = document.getElementById('chatBody'), backToChatsBtn = document.getElementById('backToChatsBtn');
   const activeChatName = document.getElementById('activeChatName'), activeAvatar = document.getElementById('activeAvatar');
@@ -417,7 +373,6 @@
     } else { alert("رمز الـ PIN غير صحيح!"); }
   });
 
-  // Auth Functions
   toggleAuthBtn.addEventListener('click', () => {
     isSignUpMode = !isSignUpMode;
     nameInput.style.display = isSignUpMode ? 'block' : 'none';
@@ -425,13 +380,43 @@
     toggleAuthBtn.textContent = isSignUpMode ? "لديك حساب؟ سجل دخولك" : "إنشاء حساب جديد";
   });
 
+  // إرسال كود/رابط إعادة التعيين عبر البريد
   forgotPassBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
-    if (!email) return alert("اكتب بريدك الإلكتروني في خانة البريد بالفي الأعلى أولاً.");
+    if (!email) return alert("اكتب البريد الإلكتروني في الخانة أولاً ثم اضغط الزر.");
+    
     try {
+      auth.languageCode = 'ar';
       await sendPasswordResetEmail(auth, email);
-      alert("تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك الإلكتروني بنجاح!");
-    } catch (err) { alert("خطأ: " + err.message); }
+      alert("تم إرسال رسالة تحتوي على الرمز/الرابط إلى إيميلك: " + email + "\n\nافتح بريدك وانقل الكود المرفق (oobCode) للخانة المخصصة.");
+      loginBox.style.display = 'none';
+      resetPassBox.style.display = 'flex';
+    } catch (err) {
+      alert("حدث خطأ: " + err.message);
+    }
+  });
+
+  cancelResetBtn.addEventListener('click', () => {
+    resetPassBox.style.display = 'none';
+    loginBox.style.display = 'flex';
+  });
+
+  // تأكيد الرمز وإدخال كلمة المرور الجديدة
+  confirmResetBtn.addEventListener('click', async () => {
+    const oobCode = resetCodeInput.value.trim();
+    const newPass = newPasswordInput.value.trim();
+
+    if (!oobCode || !newPass) return alert("يرجى إدخال الرمز وكلمة المرور الجديدة.");
+
+    try {
+      await confirmPasswordReset(auth, oobCode, newPass);
+      alert("تم تغيير كلمة السر بنجاح! يمكنك الآن تسجيل الدخول بها.");
+      resetPassBox.style.display = 'none';
+      loginBox.style.display = 'flex';
+      passwordInput.value = newPass;
+    } catch (err) {
+      alert("الرمز غير صحيح أو منتهي الصلاحية: " + err.message);
+    }
   });
 
   mainAuthBtn.addEventListener('click', async () => {
@@ -492,7 +477,6 @@
     }
   });
 
-  // Settings System
   document.getElementById('openSettingsBtn').addEventListener('click', () => settingsScreen.style.display = 'flex');
   document.getElementById('closeSettingsBtn').addEventListener('click', () => settingsScreen.style.display = 'none');
 
@@ -545,7 +529,6 @@
     signOut(auth);
   });
 
-  // Admin System ("نظامي")
   adminBannerBtn.addEventListener('click', () => {
     adminScreen.style.display = 'flex';
     loadAdminDashboard();
@@ -578,7 +561,6 @@
     });
   });
 
-  // Chat Operations
   function loadChatsList() {
     onValue(ref(db, `user_chats/${currentUser.uid}`), async (snapshot) => {
       chatList.innerHTML = '';
@@ -614,7 +596,6 @@
     chatsScreen.style.display = 'flex';
   });
 
-  // Search Delay Engine
   openSearchBtn.addEventListener('click', () => searchModal.style.display = 'flex');
   closeSearchBtn.addEventListener('click', () => searchModal.style.display = 'none');
 
@@ -654,7 +635,6 @@
     }
   }
 
-  // Realtime Messaging Engine
   function getRoomId(uid1, uid2) { return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`; }
 
   function listenToChat() {
@@ -702,7 +682,6 @@
     set(ref(db, `user_chats/${targetUser.uid}/${currentUser.uid}`), true);
   }
 
-  // Attachments & Inputs
   clipBtn.addEventListener('click', () => {
     attachMenu.style.display = attachMenu.style.display === 'flex' ? 'none' : 'flex';
     emojiPicker.style.display = 'none';
@@ -779,7 +758,6 @@
   });
 </script>
 
-<!-- تسجيل Service Worker مدمج لإلغاء شريط عنوان Chrome وعلامته بالكامل -->
 <script>
   if ('serviceWorker' in navigator) {
     const swCode = `
